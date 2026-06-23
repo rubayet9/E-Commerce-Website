@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "../../components/common/Header";
+import { API_URL } from "@/config";
 import { Search, Loader2, Package, Check, ArrowRight, Truck } from "lucide-react";
 
 function TrackContent() {
@@ -29,7 +30,7 @@ function TrackContent() {
     setOrder(null);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/track/${queryNum}`);
+      const res = await fetch(`${API_URL}/orders/track/${queryNum}`);
       const data = await res.json();
       if (data.success) {
         setOrder(data.data);

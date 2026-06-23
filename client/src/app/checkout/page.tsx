@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Header from "../../components/common/Header";
 import { useCartStore } from "../../context/cartStore";
+import { API_URL } from "@/config";
 import { CreditCard, Truck, CheckCircle, ShoppingBag, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 
@@ -45,7 +46,7 @@ export default function Checkout() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/orders", {
+      const res = await fetch(`${API_URL}/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Search, ShoppingBag, User, ChevronDown, Clock, TrendingUp, X } from "lucide-react";
 import { useCartStore } from "../../context/cartStore";
 import { useSearchStore } from "../../context/searchStore";
+import { API_URL, BASE_PATH } from "@/config";
 
 interface CategoryNode {
   id: string;
@@ -43,7 +44,7 @@ export default function Header() {
     initCart();
     
     // Fetch categories tree
-    fetch("http://localhost:5000/api/categories?tree=true")
+    fetch(`${API_URL}/categories?tree=true`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -106,7 +107,7 @@ export default function Header() {
           
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Zendora Logo" className="h-8 w-auto object-contain" />
+            <img src={`${BASE_PATH}/logo.png`} alt="Zendora Logo" className="h-8 w-auto object-contain" />
           </Link>
 
           {/* Navigation Mega Menu */}

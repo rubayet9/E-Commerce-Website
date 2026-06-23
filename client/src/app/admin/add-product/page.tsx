@@ -5,6 +5,7 @@ import Header from "../../../components/common/Header";
 import { Plus, Trash2, ArrowLeft, Loader2, CheckCircle, PackageOpen } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { API_URL } from "@/config";
 
 interface Category {
   id: string;
@@ -54,7 +55,7 @@ function AddProductContent() {
 
   // Fetch categories list on mount
   useEffect(() => {
-    fetch("http://localhost:5000/api/categories")
+    fetch(`${API_URL}/categories`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -75,7 +76,7 @@ function AddProductContent() {
     if (!editSlug) return;
     
     setIsLoadingCategories(true);
-    fetch(`http://localhost:5000/api/products/slug/${editSlug}`)
+    fetch(`${API_URL}/products/slug/${editSlug}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -146,7 +147,7 @@ function AddProductContent() {
     formData.append("image", file);
 
     try {
-      const res = await fetch("http://localhost:5000/api/upload", {
+      const res = await fetch(`${API_URL}/upload`, {
         method: "POST",
         body: formData,
       });
@@ -219,8 +220,8 @@ function AddProductContent() {
         .filter((t) => t !== "");
 
       const url = isEditMode 
-        ? `http://localhost:5000/api/products/${productId}`
-        : "http://localhost:5000/api/products";
+        ? `${API_URL}/products/${productId}`
+        : `${API_URL}/products`;
       const method = isEditMode ? "PUT" : "POST";
 
       const res = await fetch(url, {

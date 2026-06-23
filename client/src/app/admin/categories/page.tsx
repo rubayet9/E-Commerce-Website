@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../components/common/Header";
 import { Plus, Trash2, Edit3, ArrowLeft, Loader2, CheckCircle, Tag, FolderTree, X } from "lucide-react";
+import { API_URL } from "@/config";
 import Link from "next/link";
 
 interface Category {
@@ -34,7 +35,7 @@ export default function CategoryManagement() {
   // Fetch all categories on mount
   const fetchCategories = () => {
     setIsLoading(true);
-    fetch("http://localhost:5000/api/categories")
+    fetch(`${API_URL}/categories`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -102,8 +103,8 @@ export default function CategoryManagement() {
 
     try {
       const url = editId
-        ? `http://localhost:5000/api/categories/${editId}`
-        : "http://localhost:5000/api/categories";
+        ? `${API_URL}/categories/${editId}`
+        : `${API_URL}/categories`;
       const method = editId ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -143,7 +144,7 @@ export default function CategoryManagement() {
     setSuccessMessage(null);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
+      const res = await fetch(`${API_URL}/categories/${id}`, {
         method: "DELETE",
       });
 

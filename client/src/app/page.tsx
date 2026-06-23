@@ -6,6 +6,7 @@ import Header from "../components/common/Header";
 import { Product as ProductType } from "../context/searchStore";
 import { ArrowRight, ShoppingBag, Truck, CreditCard, ShieldCheck, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { API_URL, BASE_PATH } from "@/config";
 
 export default function Home() {
   const router = useRouter();
@@ -17,28 +18,28 @@ export default function Home() {
 
   const slides = [
     {
-      img: "/slider_cuban.png",
+      img: `${BASE_PATH}/slider_cuban.png`,
       link: "/products?category=men",
       title: "CUBAN COLLAR SHIRTS",
       desc: "Effortless casual comfort tailored for daily style.",
       badge: "Summer Season 2026"
     },
     {
-      img: "/slider_panjabi.png",
+      img: `${BASE_PATH}/slider_panjabi.png`,
       link: "/products",
       title: "LUXURY PANJABI COLLECTION",
       desc: "Traditional cuts engineered with modern premium details.",
       badge: "Traditional Edition"
     },
     {
-      img: "/slider_denim_jacket.png",
+      img: `${BASE_PATH}/slider_denim_jacket.png`,
       link: "/products",
       title: "STREETWEAR OUTERWEAR",
       desc: "Heavyweight utility layer and premium denim jackets.",
       badge: "Winter Collection"
     },
     {
-      img: "/slider_denim_shirt.png",
+      img: `${BASE_PATH}/slider_denim_shirt.png`,
       link: "/products",
       title: "CASUAL DENIM SHIRTS",
       desc: "Classic indigo washes, timeless everyday silhouettes.",
@@ -66,7 +67,7 @@ export default function Home() {
 
   // Fetch featured items
   useEffect(() => {
-    fetch("http://localhost:5000/api/products?limit=4")
+    fetch(`${API_URL}/products?limit=4`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -321,7 +322,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex flex-col md:flex-row justify-between gap-8 text-sm">
           <div className="flex flex-col gap-3 max-w-xs">
             <span className="text-xl font-black tracking-tight flex items-center gap-1.5">
-              <img src="/logo.png" alt="Zendora Logo" className="h-6 w-auto object-contain brightness-0 invert" />
+              <img src={`${BASE_PATH}/logo.png`} alt="Zendora Logo" className="h-6 w-auto object-contain brightness-0 invert" />
             </span>
             <p className="text-xs text-white/50 leading-relaxed font-medium">
               Zendora is a premium clothing brand in Bangladesh, crafting active sports jerseys, luxury pique polos, and casual organic streetwear.

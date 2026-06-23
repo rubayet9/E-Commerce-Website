@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
 import { User, Mail, Phone, MapPin, Package, Calendar, Tag, ExternalLink, Loader2 } from "lucide-react";
+import { API_URL } from "@/config";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -16,7 +17,7 @@ export default function Dashboard() {
   // Fetch profile on mount
   useEffect(() => {
     setIsLoadingProfile(true);
-    fetch("http://localhost:5000/api/users/profile?email=rubayet@zendora.com")
+    fetch(`${API_URL}/users/profile?email=rubayet@zendora.com`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -37,7 +38,7 @@ export default function Dashboard() {
   const fetchOrders = async (userId: string) => {
     setIsLoadingOrders(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/user/${userId}`);
+      const res = await fetch(`${API_URL}/orders/user/${userId}`);
       const data = await res.json();
       if (data.success) {
         setOrders(data.data);
