@@ -50,6 +50,23 @@ app.get("/api/users/profile", async (req, res) => {
   }
 });
 
+app.get("/api/debug/db-push", (req, res) => {
+  console.log("Triggering on-demand prisma db push...");
+  exec("npx prisma db push --accept-data-loss", (err, stdout, stderr) => {
+    if (err) {
+      console.error("Prisma db push failed:", err);
+    } else {
+      console.log("Prisma db push completed.");
+    }
+    res.json({
+      success: !err,
+      error: err ? err.message : null,
+      stdout,
+      stderr,
+    });
+  });
+});
+
 app.get("/health", async (req, res) => {
   try {
     // Perform a simple database connection check
