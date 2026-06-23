@@ -1,0 +1,178 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  STAFF
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  COD // Cash on Delivery
+  SSLCOMMERZ
+  STRIPE
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  phone        String?   @unique
+  passwordHash String? // Nullable for Social Login / OTP-only users
+  name         String
+  role         Role      @default(CUSTOMER)
+  isActive     Boolean   @default(true)
+  addresses    Address[]
+  orders       Order[]
+  cart         Cart?
+  otps         OTP[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model OTP {
+  id        String   @id @default(uuid())
+  code      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose   String // e.g., "LOGIN", "PASSWORD_RESET"
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Address {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  street     String
+  city       String // e.g., Dhaka, Chittagong
+  postalCode String?
+  country    String   @default("Bangladesh")
+  zone       String // "INSIDE_DHAKA" or "OUTSIDE_DHAKA" (crucial for shipping fee calculations)
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  orders     Order[]
+}
+
+model Category {
+  id            String     @id @default(uuid())
+  name          String
+  slug          String     @unique
+  description   String?
+  image         String?
+  parentId      String? // Self-relation for subcategories
+  parent        Category?  @relation("SubCategories", fields: [parentId], references: [id], onDelete: SetNull)
+  subCategories Category[] @relation("SubCategories")
+  products      Product[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Product {
+  id          String           @id @default(uuid())
+  name        String
+  slug        String           @unique
+  description String
+  basePrice   Decimal          @db.Decimal(10, 2)
+  images      String[] // Product level general gallery images
+  categoryId  String
+  category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  variants    ProductVariant[]
+  isActive    Boolean          @default(true)
+  tags        String[] // Tagging: ["New Arrival", "Top Selling", "Fan Edition"]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id            String      @id @default(uuid())
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku           String      @unique
+  color         String // e.g., "Navy Blue"
+  size          String // e.g., "M", "L", "XL"
+  stock         Int         @default(0)
+  priceOverride Decimal?    @db.Decimal(10, 2) // If a variant has a special price
+  images        String[] // Variant specific images (color-based)
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Cart {
+  id           String     @id @default(uuid())
+  userId       String?    @unique // Nullable for anonymous guest shopping carts
+  user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionToken String?    @unique // Guest checkout session token mapping
+  items        CartItem[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model CartItem {
+  id               String         @id @default(uuid())
+  cartId           String
+  cart             Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productVariantId String
+  variant          ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  quantity         Int            @default(1)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([cartId, productVariantId])
+}
+
+model Order {
+  id             String        @id @default(uuid())
+  orderNumber    String        @unique // e.g., "FL-10024"
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status         OrderStatus   @default(PENDING)
+  paymentStatus  PaymentStatus @default(PENDING)
+  paymentMethod  PaymentMethod
+  addressId      String
+  address        Address       @relation(fields: [addressId], references: [id], onDelete: Restrict)
+  subTotal       Decimal       @db.Decimal(10, 2)
+  shippingCost   Decimal       @db.Decimal(10, 2)
+  totalAmount    Decimal       @db.Decimal(10, 2)
+  trackingNumber String?
+  paymentDetails Json? // For storing transaction IDs, response bodies from gateway
+  items          OrderItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model OrderItem {
+  id               String         @id @default(uuid())
+  orderId          String
+  order            Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productVariantId String
+  variant          ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  quantity         Int
+  priceAtPurchase  Decimal        @db.Decimal(10, 2) // Capturing price at historical moment
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
