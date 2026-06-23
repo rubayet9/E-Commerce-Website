@@ -2,5 +2,5 @@
 2:I[47721,["/E-Commerce-Website/_next/static/chunks/1t6cqee5wf3c6.js","/E-Commerce-Website/_next/static/chunks/14mrh2-p_w84d.js","/E-Commerce-Website/_next/static/chunks/0esk751cus8fb.js"],"default"]
 3:I[97367,["/E-Commerce-Website/_next/static/chunks/1t6cqee5wf3c6.js","/E-Commerce-Website/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"slug":"placeholder"}],[["$","script","script-0",{"src":"/E-Commerce-Website/_next/static/chunks/0esk751cus8fb.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"4ax-sswJDoORsXz5Vwq-4"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"slug":"placeholder"}],[["$","script","script-0",{"src":"/E-Commerce-Website/_next/static/chunks/0esk751cus8fb.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"w0ICP5mjWkCno9Q4HYp35"}
 5:null
