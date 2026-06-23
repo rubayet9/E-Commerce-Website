@@ -30,7 +30,7 @@ jobs:
 
       - name: Build and Export
         env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api' }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'https://e-commerce-website-p3qp.onrender.com/api' }}
         run: |
           cd client
           npm run build
