@@ -39,6 +39,8 @@ jobs:
         run: |
           # Copy index.html to 404.html to support client-side routing refresh on GitHub Pages
           cp client/out/index.html client/out/404.html
+          # Create .nojekyll file to prevent GitHub Pages from ignoring folders starting with underscore (like _next)
+          touch client/out/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
