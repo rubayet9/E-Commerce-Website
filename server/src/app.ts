@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { exec } from "child_process";
 import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
 import cartRoutes from "./routes/cartRoutes";
@@ -49,16 +50,50 @@ app.get("/api/users/profile", async (req, res) => {
   }
 });
 
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", message: "E-commerce API server is running." });
+app.get("/health", async (req, res) => {
+  try {
+    // Perform a simple database connection check
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({
+      status: "ok",
+      message: "E-commerce API server is running.",
+      database: "connected"
+    });
+  } catch (err: any) {
+    console.error("Database connection check failed on /health:", err);
+    res.status(500).json({
+      status: "error",
+      message: "E-commerce API server is running, but database connection failed.",
+      error: err.message || String(err)
+    });
+  }
 });
 
 // Catch-all Global Error Handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
+
+  // Auto-seed database if it is empty
+  try {
+    const userCount = await prisma.user.count();
+    if (userCount === 0) {
+      console.log("Database is empty. Running auto-seeding...");
+      exec("node dist/prisma/seed.js", (err, stdout, stderr) => {
+        if (err) {
+          console.error("Auto-seeding failed:", err);
+        } else {
+          console.log("Auto-seeding completed successfully:", stdout);
+        }
+      });
+    } else {
+      console.log(`Database already has ${userCount} users. Skipping seeding.`);
+    }
+  } catch (dbError) {
+    console.error("Failed to check or seed database at startup:", dbError);
+  }
 });
 
 export default app;
