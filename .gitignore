@@ -24,3 +24,9 @@ server/uploads/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Built files
+dist/
+server/dist/
+client/out/
+client/build/

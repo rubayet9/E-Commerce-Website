@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingBag, User, ChevronDown, Clock, TrendingUp, X } from "lucide-react";
+import { Search, ShoppingBag, User, ChevronDown, Clock, TrendingUp, X, LogOut, LayoutDashboard, LogIn, UserPlus } from "lucide-react";
 import { useCartStore } from "../../context/cartStore";
 import { useSearchStore } from "../../context/searchStore";
+import { useAuthStore } from "../../context/authStore";
 import { API_URL, BASE_PATH } from "@/config";
 
 interface CategoryNode {
@@ -22,14 +23,17 @@ export default function Header() {
   // Zustand Store values
   const { cart, toggleCart, initCart } = useCartStore();
   const { setFilters, fetchProducts } = useSearchStore();
+  const { user, isAuthenticated, logout, loadUser } = useAuthStore();
 
   // Component States
   const [categories, setCategories] = useState<CategoryNode[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   
   const searchRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Popular search items
   const popularSearches = [
@@ -39,9 +43,10 @@ export default function Header() {
     "Classic Cotton Print Kurti",
   ];
 
-  // Initialize cart and fetch categories on mount
+  // Initialize cart, auth, and fetch categories on mount
   useEffect(() => {
     initCart();
+    loadUser();
     
     // Fetch categories tree
     fetch(`${API_URL}/categories?tree=true`)
@@ -62,11 +67,14 @@ export default function Header() {
     }
   }, [initCart]);
 
-  // Click outside search suggestions handler
+  // Click outside handlers
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchFocused(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -95,6 +103,12 @@ export default function Header() {
     const updated = recentSearches.filter((s) => s !== text);
     setRecentSearches(updated);
     localStorage.setItem("fl_recent_searches", JSON.stringify(updated));
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsUserMenuOpen(false);
+    router.push("/login");
   };
 
   // Compute total cart item quantity
@@ -244,11 +258,69 @@ export default function Header() {
           </div>
 
           {/* Action Icons */}
-          <div className="flex items-center gap-4">
-            {/* User Dashboard */}
-            <Link href="/dashboard" className="p-2 text-foreground/70 hover:text-primary transition-colors relative">
-              <User size={20} />
-            </Link>
+          <div className="flex items-center gap-3">
+            {/* User Menu */}
+            <div ref={userMenuRef} className="relative">
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="p-2 text-foreground/70 hover:text-primary transition-colors relative flex items-center gap-1.5"
+              >
+                {isAuthenticated && user ? (
+                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-500 text-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                    {user.name.charAt(0)}
+                  </div>
+                ) : (
+                  <User size={20} />
+                )}
+              </button>
+
+              {/* Dropdown Menu */}
+              {isUserMenuOpen && (
+                <div className="absolute right-0 top-[110%] w-56 bg-white border border-border-custom rounded-xl shadow-xl z-50 overflow-hidden animate-slide-up">
+                  {isAuthenticated && user ? (
+                    <>
+                      {/* User Info */}
+                      <div className="px-4 py-3 bg-secondary/50 border-b border-border-custom">
+                        <p className="text-sm font-bold text-primary truncate">{user.name}</p>
+                        <p className="text-[11px] text-foreground/40 truncate">{user.email}</p>
+                      </div>
+                      <div className="py-1.5">
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-foreground/70 hover:bg-secondary hover:text-primary transition-colors"
+                        >
+                          <LayoutDashboard size={16} /> Dashboard
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut size={16} /> Sign Out
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="py-1.5">
+                      <Link
+                        href="/login"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-foreground/70 hover:bg-secondary hover:text-primary transition-colors"
+                      >
+                        <LogIn size={16} /> Sign In
+                      </Link>
+                      <Link
+                        href="/signup"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-foreground/70 hover:bg-secondary hover:text-accent transition-colors"
+                      >
+                        <UserPlus size={16} /> Create Account
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Shopping Bag Icon with Count */}
             <button

@@ -1,9 +1,12 @@
 import prisma from "../src/config/db";
+import bcrypt from "bcryptjs";
 
 async function main() {
   console.log("Seeding started...");
 
   // Clear existing data
+  await prisma.favourite.deleteMany({});
+  await prisma.oTP.deleteMany({});
   await prisma.orderItem.deleteMany({});
   await prisma.order.deleteMany({});
   await prisma.cartItem.deleteMany({});
@@ -59,7 +62,6 @@ async function main() {
   console.log("Categories seeded successfully.");
 
   // 2. Create Products and Variants
-  // Product 1: Premium Men's T-Shirt
   const prod1 = await prisma.product.create({
     data: {
       name: "Premium Crewneck T-Shirt",
@@ -85,7 +87,6 @@ async function main() {
     },
   });
 
-  // Product 2: Slim Fit Polo
   const prod2 = await prisma.product.create({
     data: {
       name: "Luxury Pique Polo Shirt",
@@ -109,7 +110,6 @@ async function main() {
     },
   });
 
-  // Product 3: Bangladesh Fan Edition Football Jersey
   const prod3 = await prisma.product.create({
     data: {
       name: "Bangladesh Fan Edition Jersey",
@@ -126,14 +126,13 @@ async function main() {
           { sku: "BD-JR-GRN-M", color: "Green", size: "M", stock: 150 },
           { sku: "BD-JR-GRN-L", color: "Green", size: "L", stock: 180 },
           { sku: "BD-JR-GRN-XL", color: "Green", size: "XL", stock: 120 },
-          { sku: "BD-JR-RED-M", color: "Red", size: "M", stock: 75, priceOverride: 900.0 }, // Special sale discount
+          { sku: "BD-JR-RED-M", color: "Red", size: "M", stock: 75, priceOverride: 900.0 },
           { sku: "BD-JR-RED-L", color: "Red", size: "L", stock: 85, priceOverride: 900.0 },
         ],
       },
     },
   });
 
-  // Product 4: Women's Traditional Cotton Kurti
   const prod4 = await prisma.product.create({
     data: {
       name: "Classic Cotton Print Kurti",
@@ -155,13 +154,16 @@ async function main() {
     },
   });
 
-  // 3. Create Seed User
+  console.log("Products seeded successfully.");
+
+  // 3. Create Super Admin User
+  const superAdminPassword = await bcrypt.hash("Rubayet9@", 12);
   await prisma.user.create({
     data: {
-      email: "rubayet@zendora.com",
+      email: "rubayetfivermail@gmail.com",
       name: "Rubayet Khan",
-      role: "ADMIN",
-      passwordHash: "dummyhash123",
+      role: "SUPER_ADMIN",
+      passwordHash: superAdminPassword,
       phone: "+8801700000000",
       addresses: {
         create: [
@@ -178,7 +180,7 @@ async function main() {
     },
   });
 
-  console.log("Products and Seed User completed.");
+  console.log("Super Admin account created: rubayetfivermail@gmail.com");
   console.log("Seeding finished successfully.");
 }
 

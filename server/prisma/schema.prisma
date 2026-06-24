@@ -10,6 +10,7 @@ enum Role {
   CUSTOMER
   ADMIN
   STAFF
+  SUPER_ADMIN
 }
 
 enum OrderStatus {
@@ -35,19 +36,22 @@ enum PaymentMethod {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  email        String    @unique
-  phone        String?   @unique
-  passwordHash String? // Nullable for Social Login / OTP-only users
-  name         String
-  role         Role      @default(CUSTOMER)
-  isActive     Boolean   @default(true)
-  addresses    Address[]
-  orders       Order[]
-  cart         Cart?
-  otps         OTP[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id               String      @id @default(uuid())
+  email            String      @unique
+  phone            String?     @unique
+  passwordHash     String? // Nullable for Social Login / OTP-only users
+  name             String
+  role             Role        @default(CUSTOMER)
+  isActive         Boolean     @default(true)
+  resetToken       String? // For password reset flow
+  resetTokenExpiry DateTime? // Expiry for the reset token
+  addresses        Address[]
+  orders           Order[]
+  cart             Cart?
+  otps             OTP[]
+  favourites       Favourite[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 }
 
 model OTP {
@@ -102,6 +106,7 @@ model Product {
   variants    ProductVariant[]
   isActive    Boolean          @default(true)
   tags        String[] // Tagging: ["New Arrival", "Top Selling", "Fan Edition"]
+  favourites  Favourite[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 }
@@ -175,4 +180,15 @@ model OrderItem {
   priceAtPurchase  Decimal        @db.Decimal(10, 2) // Capturing price at historical moment
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+}
+
+model Favourite {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
 }

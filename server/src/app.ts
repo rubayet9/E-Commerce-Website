@@ -6,6 +6,9 @@ import productRoutes from "./routes/productRoutes";
 import cartRoutes from "./routes/cartRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
+import authRoutes from "./routes/authRoutes";
+import adminRoutes from "./routes/adminRoutes";
+import favouriteRoutes from "./routes/favouriteRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 import prisma from "./config/db";
 
@@ -25,15 +28,19 @@ app.use((req, res, next) => {
 });
 
 // Mount API routes
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/favourites", favouriteRoutes);
 
 // Serve static uploaded files
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
+// Legacy profile endpoint (kept for backward compatibility)
 app.get("/api/users/profile", async (req, res) => {
   try {
     const email = (req.query.email as string) || "rubayet@zendora.com";

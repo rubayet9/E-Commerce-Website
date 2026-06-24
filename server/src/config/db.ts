@@ -10,7 +10,7 @@ let prisma: PrismaClient;
 if (!connectionString) {
   console.error("CRITICAL ERROR: DATABASE_URL environment variable is missing.");
   // Instantiate PrismaClient as a fallback to avoid crash on import
-  prisma = new PrismaClient();
+  prisma = new PrismaClient({ adapter: new PrismaPg(new Pool()) });
 } else {
   try {
     const isNeonOrSupabase = connectionString.includes("neon.tech") || connectionString.includes("supabase.co");
@@ -27,7 +27,8 @@ if (!connectionString) {
     prisma = new PrismaClient({ adapter });
   } catch (error) {
     console.error("Failed to initialize database pool:", error);
-    prisma = new PrismaClient();
+    // Use dummy client to avoid crash on load
+    prisma = new PrismaClient({ adapter: new PrismaPg(new Pool()) });
   }
 }
 
