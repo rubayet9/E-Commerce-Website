@@ -2,5 +2,5 @@
 2:I[47721,["/E-Commerce-Website/_next/static/chunks/3pfld76w4foz9.js","/E-Commerce-Website/_next/static/chunks/14mrh2-p_w84d.js","/E-Commerce-Website/_next/static/chunks/3d_k2ehrbrgj6.js"],"default"]
 3:I[97367,["/E-Commerce-Website/_next/static/chunks/3pfld76w4foz9.js","/E-Commerce-Website/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"slug":"luxury-pique-polo"}],[["$","script","script-0",{"src":"/E-Commerce-Website/_next/static/chunks/3d_k2ehrbrgj6.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"oxk_3GXqStsChLG79KoRv"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"slug":"luxury-pique-polo"}],[["$","script","script-0",{"src":"/E-Commerce-Website/_next/static/chunks/3d_k2ehrbrgj6.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"AeG7nMifNbroTq9Tn0rYb"}
 5:null
