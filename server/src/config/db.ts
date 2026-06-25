@@ -13,10 +13,12 @@ if (!connectionString) {
   prisma = new PrismaClient({ adapter: new PrismaPg(new Pool()) });
 } else {
   try {
-    const isNeonOrSupabase = connectionString.includes("neon.tech") || connectionString.includes("supabase.co");
+    // Enable SSL for production/cloud databases (Render, Neon, Supabase, etc.)
+    // Local connections (localhost) don't need SSL
+    const isLocal = connectionString.includes("localhost") || connectionString.includes("127.0.0.1");
     const pool = new Pool({
       connectionString,
-      ssl: isNeonOrSupabase ? { rejectUnauthorized: false } : undefined,
+      ssl: isLocal ? undefined : { rejectUnauthorized: false },
     });
 
     pool.on("error", (err) => {

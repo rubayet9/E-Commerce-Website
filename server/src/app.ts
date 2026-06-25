@@ -98,25 +98,30 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT} (${process.env.NODE_ENV || "development"})`);
 
   // Auto-seed database if it is empty
   try {
     const userCount = await prisma.user.count();
     if (userCount === 0) {
       console.log("Database is empty. Running auto-seeding...");
-      exec("node dist/prisma/seed.js", (err, stdout, stderr) => {
+      const seedCmd = process.env.NODE_ENV === "production"
+        ? "node dist/prisma/seed.js"
+        : "npx ts-node prisma/seed.ts";
+      exec(seedCmd, (err, stdout, stderr) => {
         if (err) {
-          console.error("Auto-seeding failed:", err);
+          console.error("Auto-seeding failed:", err.message);
+          if (stderr) console.error("Seed stderr:", stderr);
         } else {
-          console.log("Auto-seeding completed successfully:", stdout);
+          console.log("Auto-seeding completed successfully.");
+          if (stdout) console.log(stdout);
         }
       });
     } else {
       console.log(`Database already has ${userCount} users. Skipping seeding.`);
     }
-  } catch (dbError) {
-    console.error("Failed to check or seed database at startup:", dbError);
+  } catch (dbError: any) {
+    console.error("Failed to check or seed database at startup:", dbError.message || dbError);
   }
 });
 
