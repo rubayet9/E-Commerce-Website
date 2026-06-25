@@ -85,8 +85,8 @@ async function getOrCreateCart(userId?: string, sessionToken?: string) {
 
 // GET cart details
 export const getCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.query.userId as string | undefined;
-  const sessionToken = req.query.sessionToken as string | undefined;
+  const userId = req.query.userId ? (req.query.userId as string) : undefined;
+  const sessionToken = req.query.sessionToken ? (req.query.sessionToken as string) : undefined;
 
   if (!userId && !sessionToken) {
     return res.status(400).json({ success: false, error: "Please provide a userId or sessionToken" });
@@ -98,8 +98,8 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
 
 // POST Add item to cart
 export const addToCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.body.userId as string | undefined;
-  const sessionToken = req.body.sessionToken as string | undefined;
+  const userId = req.body.userId ? (req.body.userId as string) : undefined;
+  const sessionToken = req.body.sessionToken ? (req.body.sessionToken as string) : undefined;
   const productVariantId = req.body.productVariantId as string | undefined;
   const quantity = parseInt(req.body.quantity || "1", 10);
 
@@ -225,8 +225,8 @@ export const removeCartItem = asyncHandler(async (req: Request, res: Response) =
 
 // POST Merge Guest Cart into User Cart
 export const mergeCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.body.userId as string | undefined;
-  const sessionToken = req.body.sessionToken as string | undefined;
+  const userId = req.body.userId ? (req.body.userId as string) : undefined;
+  const sessionToken = req.body.sessionToken ? (req.body.sessionToken as string) : undefined;
 
   if (!userId || !sessionToken) {
     res.status(400);

@@ -77,7 +77,7 @@ app.get("/api/debug/db-push", (req, res) => {
 app.get("/health", async (req, res) => {
   try {
     // Perform a simple database connection check
-    await prisma.$queryRaw`SELECT 1`;
+    await prisma.$queryRawUnsafe("SELECT 1");
     res.json({
       status: "ok",
       message: "E-commerce API server is running.",
