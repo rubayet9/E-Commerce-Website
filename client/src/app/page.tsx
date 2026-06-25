@@ -121,31 +121,8 @@ export default function Home() {
               <img 
                 src={slide.img} 
                 alt={slide.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover object-top"
               />
-              
-              {/* Dark Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-              
-              {/* Content Panel */}
-              <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-start gap-4 sm:gap-6 text-white z-10 select-none">
-                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-accent bg-accent/15 px-3.5 py-1.5 rounded-full border border-accent/20 animate-fade-in">
-                  {slide.badge}
-                </span>
-                <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none max-w-3xl animate-slide-up">
-                  {slide.title}
-                </h1>
-                <p className="text-xs sm:text-base text-white/70 max-w-lg leading-relaxed font-medium">
-                  {slide.desc}
-                </p>
-                <div className="flex gap-4 w-full sm:w-auto mt-2">
-                  <span
-                    className="h-11 sm:h-12 px-6 sm:px-8 bg-accent hover:bg-accent-hover text-white font-bold rounded-xl text-xs sm:text-sm shadow-lg transition-colors flex items-center justify-center gap-2"
-                  >
-                    Shop Now <ArrowRight size={16} />
-                  </span>
-                </div>
-              </div>
             </div>
           ))}
         </div>
@@ -198,14 +175,14 @@ export default function Home() {
               <img
                 src={cat.img}
                 alt={cat.name}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
               />
-              {/* Backdrop Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-6" />
-              
-              <div className="relative text-white flex flex-col gap-1 z-10">
-                <h3 className="text-lg font-extrabold">{cat.name}</h3>
-                <p className="text-xs text-white/70 leading-relaxed font-medium">{cat.desc}</p>
+              {/* Backdrop Gradient & Text content */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-6 z-10">
+                <div className="text-white flex flex-col gap-1">
+                  <h3 className="text-lg font-extrabold">{cat.name}</h3>
+                  <p className="text-xs text-white/70 leading-relaxed font-medium">{cat.desc}</p>
+                </div>
               </div>
             </div>
           ))}
